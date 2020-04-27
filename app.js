@@ -1,35 +1,53 @@
 'use strict'
-let products = [
-  {id: '1', title: 'Notebook', price: 20000},
-  {id: '2', title: 'Mouse', price: 1500},
-  {id: '3', title: 'Keyboard', price: 5000},
-  {id: '4', title: 'Gamepad', price: 4500},
-];
+class ProductList {
+  constructor(container = '.catalog') {
+    this.container = container;
+    this.goods = [];
+    this.allProducts = [];
+    this._fetchProducts();
+    this._render();
+  }
 
-var id = 0;
-const renderProduct = (title, price) => {
-    
-    id++
-  return `<div class="prdct">
-            <h3 class="name">${title}</h3>
+  _fetchProducts() {
+    this.goods = [
+      {id: 1, title: 'Notebook', price: 20000},
+      {id: 2, title: 'Mouse', price: 1500},
+      {id: 3, title: 'Keyboard', price: 5000},
+      {id: 4, title: 'Gamepad', price: 4500},
+    ]
+  }
+
+  _render() {
+    const block = document.querySelector(this.container);
+
+    for (let product of this.goods) {
+      const productObject = new ProductItem(product);
+      this.allProducts.push(productObject);
+      block.insertAdjacentHTML('beforeend', productObject.render());
+    }
+  }
+}
+
+class ProductItem {
+  constructor(product, img) {
+    this.title = product.title;
+    this.price = product.price;
+    this.id = product.id;
+    this.img = img;
+  }
+
+  render() {
+    return `<div class="prdct">
+            <h3 class="name">${this.title}</h3>
             <img src="https://placeimg.com/640/480/animals" alt="" class="pict">
-            <p class="price">${price} RUB</p>
-            <button class="buy" data-id=${id} data-price=${price} data-name="Товар ${id}">В корзину</button>
+            <p class="price">${this.price} RUB</p>
+            <button class="buy" data-id=${this.id} data-price=${this.price} data-name=${this.title}>Купить</button>
           </div>`;
-};
+  }
+}
+new ProductList();
 
-const renderProducts = (list) => {
-  const productList = [];
-  list.forEach(good => {
-    productList.push(renderProduct(good.title, good.price));
-  });
-  console.log(productList);
-  document.querySelector('.catalog').innerHTML = productList;
-};
-
-renderProducts(products);
-
-
+    
 const cart = document.querySelector('.cart');
 const opncart = document.querySelector('.open__cart');
 const clscart = document.querySelector('.close__cart');
